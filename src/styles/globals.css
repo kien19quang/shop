@@ -109,3 +109,27 @@ a {
 .container {
   max-width: 1200px;
 }
+
+.ant-btn {
+  box-shadow: none;
+}
+
+
+.list-category {
+  .slick-track {
+    display: flex !important;
+    column-gap: 16px !important;
+  }
+}
+
+.ant-carousel {
+  width: 100%;
+}
+
+:focus-visible {
+  outline: none;
+}
+
+.slick-dots {
+  z-index: 10;
+}
