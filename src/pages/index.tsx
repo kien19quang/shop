@@ -10,6 +10,8 @@ import Banner1 from '@/assets/images/Banner1.png';
 import Banner2 from '@/assets/images/Banner2.png';
 import Banner3 from '@/assets/images/Banner3.png';
 import MainBanner from '@/assets/images/MainBanner.png';
+import { useRouter } from 'next/router';
+import { CustomNextArrow, CustomPrevArrow } from '@/components/common/Arrow';
 
 const { Text } = Typography;
 const { Meta } = Card;
@@ -45,21 +47,6 @@ for (let i = 0; i < 42; i++) {
   listProduct.push(i);
 }
 
-const customArrow: React.CSSProperties = {
-  backgroundColor: '#fff',
-  border: '1px solid #ccc',
-  borderRadius: '50%',
-  width: '32px',
-  height: '32px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-  position: 'absolute',
-  top: '50%',
-  transform: 'translateY(-50%)',
-  zIndex: 5,
-};
 
 const listCategory: Array<{ label: string; urlImage: any }> = [
   { label: 'Kiến thức - Bách khoa', urlImage: CategoryImage },
@@ -72,26 +59,16 @@ const listCategory: Array<{ label: string; urlImage: any }> = [
   { label: 'Tiểu thuyết', urlImage: CategoryImage2 },
 ];
 
-const CustomPrevArrow = (props: any) => {
-  const { onClick } = props;
-  return (
-    <div style={{ ...customArrow, left: 0 }} onClick={onClick}>
-      <LeftOutlined />
-    </div>
-  );
-};
 
-const CustomNextArrow = (props: any) => {
-  const { onClick } = props;
-  return (
-    <div style={{ ...customArrow, right: 0 }} onClick={onClick}>
-      <RightOutlined />
-    </div>
-  );
-};
 
 const Shop = () => {
   const [activeTabKey, setActiveTabKey] = useState<string>('ForYou');
+
+  const router = useRouter()
+
+  const handleShowProduct = (item: any) => {
+    router.push({pathname: "product/Apple_iPhone_13", query: { id: item }})
+  }
 
   const renderContent = (dataSource: any, text: any): React.ReactNode => {
     return (
@@ -103,6 +80,7 @@ const Shop = () => {
             console.log(page);
           },
           pageSize: 24,
+          showSizeChanger: true
         }}
         renderItem={(item) => {
           return (
@@ -118,6 +96,7 @@ const Shop = () => {
                   />
                 }
                 bodyStyle={{ borderTop: '1px solid rgb(240, 240, 240)' }}
+                onClick={() => handleShowProduct(item)}
               >
                 <Meta
                   title={<Text>Apple iPhone 13</Text>}

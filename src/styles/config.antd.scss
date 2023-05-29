@@ -1,0 +1,23 @@
+.ant-btn {
+  box-shadow: none !important;
+}
+
+
+.list-category {
+  .slick-track {
+    display: flex !important;
+    column-gap: 16px !important;
+  }
+}
+
+.ant-carousel {
+  width: 100%;
+}
+
+.slick-dots {
+  z-index: 10;
+}
+
+.ant-input-number-group-addon {
+  padding: 0 !important;
+}
