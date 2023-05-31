@@ -141,7 +141,7 @@ const ProductDetail = () => {
                 <Button
                   onClick={() => handleChangeQuantity(quanlity - 1)}
                   type="text"
-                  className={style["btn__quantity"]}
+                  className="btn__quantity"
                   disabled={quanlity === 1}
                 >
                   <MinusOutlined />
@@ -150,7 +150,7 @@ const ProductDetail = () => {
               addonAfter={
                 <Button
                   type="text"
-                  className={style["btn__quantity"]}
+                  className="btn__quantity"
                   onClick={() => handleChangeQuantity(quanlity + 1)}
                 >
                   <PlusOutlined />

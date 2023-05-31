@@ -10,6 +10,7 @@ import {
   ShoppingCartOutlined,
 } from '@ant-design/icons';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Search } = Input;
@@ -44,6 +45,11 @@ const ListMenuItem: MenuProps['items'] = [
 const MainLayout = ({ children }: LayoutProps): JSX.Element => {
   const { token } = theme.useToken();
   const [collapsed, setCollapsed] = useState<boolean>(false)
+  const router = useRouter()
+
+  const handleRouterCart = () => {
+    router.push('/cart')
+  }
 
   return (
     <Layout hasSider style={{ backgroundColor: '#fff', minHeight: '100vh' }}>
@@ -74,6 +80,7 @@ const MainLayout = ({ children }: LayoutProps): JSX.Element => {
             marginTop: '24px',
           }}
           align="middle"
+          onClick={() => router.push('/')} 
         >
           <Image src={Logo} alt="Logo Thăng Long" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </Row>
@@ -126,7 +133,7 @@ const MainLayout = ({ children }: LayoutProps): JSX.Element => {
             </Popover>
 
             <Badge count={99} overflowCount={10}>
-              <ShoppingCartOutlined style={{ cursor: 'pointer', fontSize: '30px' }} />
+              <ShoppingCartOutlined style={{ cursor: 'pointer', fontSize: '30px' }} onClick={handleRouterCart} />
             </Badge>
           </Row>
         </Header>
