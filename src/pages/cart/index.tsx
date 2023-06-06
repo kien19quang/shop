@@ -141,14 +141,14 @@ const Cart = () => {
             itemLayout="vertical"
             style={{ width: '100%' }}
             dataSource={listProduct}
-            renderItem={(item) => {
+            renderItem={(item, index) => {
               return (
                 <List.Item
                   key={item.label}
                   extra={<Image width={250} alt="logo" src={item.urlImage} />}
                   style={{ display: 'flex', alignItems: 'center' }}
                   actions={[
-                    <Row align="middle" style={{ gap: 8, height: '100%' }}>
+                    <Row align="middle" style={{ gap: 8, height: '100%' }} key={index}>
                       <Checkbox />
 
                       <Divider type="vertical" style={{ height: '2em' }} />

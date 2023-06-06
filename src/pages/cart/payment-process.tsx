@@ -106,7 +106,7 @@ const PaymentProcess = () => {
             <List.Item
               key={index}
               actions={[
-                <Row align="middle" style={{ gap: 8, height: '100%' }}>
+                <Row align="middle" style={{ gap: 8, height: '100%' }} key={index}>
                   <Button icon={<EditOutlined />} type="primary" onClick={() => handleEditAddress(item)} />
 
                   <Divider type="vertical" style={{ height: '2.4em' }} />
@@ -177,7 +177,7 @@ const PaymentProcess = () => {
         itemLayout="horizontal"
         renderItem={(item, index) => {
           return (
-            <List.Item actions={[<Text strong>{moment().format('DD MMM, YYYY')}</Text>]}>
+            <List.Item actions={[<Text strong key={index}>{moment().format('DD MMM, YYYY')}</Text>]}>
               <Row style={{ gap: 16 }}>
                 <Radio checked={selectedShipping === index} onChange={() => handleChangeChecked(index, 'shipping')}/>
                 <Text strong>Free</Text>
@@ -205,7 +205,7 @@ const PaymentProcess = () => {
         }
         renderItem={(item, index) => {
           return (
-            <List.Item actions={[<Button icon={<DeleteOutlined />} danger type="primary" />]}>
+            <List.Item actions={[<Button key={index} icon={<DeleteOutlined />} danger type="primary" />]}>
               <Row style={{ gap: 16 }}>
                 <Radio checked={selectedPaymentMethod === index} onChange={() => handleChangeChecked(index, 'paymentMethod')}/>
                 <Row align="middle">
