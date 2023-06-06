@@ -28,6 +28,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { useRouter } from 'next/router';
+import OrderSummary from '@/components/common/OrderSummary';
 
 const { Text } = Typography;
 const listProduct: Array<{ label: string; urlImage: any }> = [];
@@ -80,7 +81,7 @@ const Cart = () => {
   const [showBulkAction, setShowBulkAction] = useState<boolean>(false);
   const [checkedAll, setCheckedAll] = useState<boolean>(false);
   const { token } = theme.useToken();
-  const router = useRouter()
+  const router = useRouter();
 
   const handleChangeCheckedAll = (e: CheckboxChangeEvent) => {
     setCheckedAll(e.target.checked);
@@ -186,47 +187,15 @@ const Cart = () => {
         </Row>
 
         <Row style={{ width: '30%', maxWidth: '330px', height: '500px' }}>
-          <Card title={<Text style={{ fontSize: 16 }}>Order Summary</Text>} style={{ width: '100%' }}>
-            <Row style={{ flexDirection: 'column', gap: 24 }}>
-              <Row justify="space-between">
-                <Text>Price</Text>
-                <Statistic value={319.98} prefix="$" valueStyle={{ fontSize: 14 }} />
-              </Row>
-
-              <Row justify="space-between">
-                <Text>Discount</Text>
-                <Statistic value={31.9} prefix="$" valueStyle={{ fontSize: 14 }} />
-              </Row>
-
-              <Row justify="space-between">
-                <Text>Shipping</Text>
-                <Text style={{ color: token.colorPrimary }}>Free</Text>
-              </Row>
-
-              <Row justify="space-between">
-                <Text>Coupon Applied</Text>
-                <Statistic value={0.0} prefix="$" valueStyle={{ fontSize: 14 }} />
-              </Row>
-            </Row>
-
-            <Divider />
-
-            <Row style={{ flexDirection: 'column', gap: 24 }}>
-              <Row justify="space-between">
-                <Text>TOTAL</Text>
-                <Statistic value={288.08} prefix="$" valueStyle={{ fontSize: 14, fontWeight: 600 }} />
-              </Row>
-
-              <Row justify="space-between">
-                <Text>Estimated Delivery by</Text>
-                <Text strong>01 Feb, 2023</Text>
-              </Row>
-
-              <Select placeholder="Coupon Code" suffixIcon={<TagOutlined />} allowClear />
-
-              <Button type="primary" onClick={() => router.push('/cart/payment-process')}>Proceed to Checkout</Button>
-            </Row>
-          </Card>
+          <OrderSummary
+            price={319.98}
+            discount={31.9}
+            shipping="Free"
+            estimatedDelivery={new Date()}
+            titleButton="Proceed to Checkout"
+            listCoupon={[{value: 1, label: "Giảm 50%"}]}
+            onOk={() => router.push('/cart/payment-process')}
+          />
         </Row>
       </Row>
     </Row>

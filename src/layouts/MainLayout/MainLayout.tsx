@@ -1,20 +1,15 @@
-import { LayoutProps } from '@/models/common';
-import { Layout, Row, Menu, MenuProps, Input, Popover, Button, Avatar, theme, Select, Badge, Divider } from 'antd';
+import { KeyMenuAsRoute, LayoutProps } from '@/models/common';
+import { Layout, Row, Menu, MenuProps, Input, Popover, Button, Avatar, theme, Select, Badge, Divider, Typography } from 'antd';
 import Image from 'next/image';
-import Logo from '@/assets/logo.svg';
-import {
-  ShopOutlined,
-  TeamOutlined,
-  MailOutlined,
-  UserOutlined,
-  ShoppingCartOutlined,
-} from '@ant-design/icons';
-import { useState } from 'react';
+import Logo from '@/assets/LogoSecondary.svg';
+import { ShopOutlined, TeamOutlined, MailOutlined, UserOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { MenuInfo } from 'rc-menu/lib/interface';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Search } = Input;
-
+const { Title } = Typography
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -42,14 +37,38 @@ const ListMenuItem: MenuProps['items'] = [
   getItem('Contact', 'Contact', <MailOutlined style={{ fontSize: 18 }} />, { fontSize: 16 }),
 ];
 
+const listRouteMenuItem: Array<{ route: string; key: string }> = [
+  { route: 'about-us', key: 'About Us' },
+  { route: 'contact', key: 'Contact' },
+];
+
 const MainLayout = ({ children }: LayoutProps): JSX.Element => {
   const { token } = theme.useToken();
-  const [collapsed, setCollapsed] = useState<boolean>(false)
-  const router = useRouter()
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [selectedKeyMenu, setSelectedKeyMenu] = useState<string>('Shop');
+  const router = useRouter();
+
+  useEffect(() => {
+    for (let i = 0; i < listRouteMenuItem.length; i++) {
+      const item = listRouteMenuItem[i];
+      if (router.pathname.includes(`${item.route}`)) {
+        setSelectedKeyMenu(item.key);
+        break;
+      }
+    }
+  }, []);
 
   const handleRouterCart = () => {
-    router.push('/cart')
-  }
+    router.push('/cart');
+  };
+
+  const handleClickMenu = (value: MenuInfo) => {
+    const keyMenu = value.key as keyof typeof KeyMenuAsRoute;
+    if (keyMenu !== selectedKeyMenu) {
+      router.push(`/${KeyMenuAsRoute[keyMenu]}`);
+      setSelectedKeyMenu(keyMenu);
+    }
+  };
 
   return (
     <Layout hasSider style={{ backgroundColor: '#fff', minHeight: '100vh' }}>
@@ -69,24 +88,26 @@ const MainLayout = ({ children }: LayoutProps): JSX.Element => {
           top: 0,
           bottom: 0,
           zIndex: 100,
+          transition: 'width 1s linear'
         }}
       >
-        <Row
-          style={{
-            height: '46px',
-            width: '130px',
-            margin: 'auto',
-            cursor: 'pointer',
-            marginTop: '24px',
-          }}
-          align="middle"
-          onClick={() => router.push('/')} 
-        >
-          <Image src={Logo} alt="Logo Thăng Long" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        <Row align="middle" justify="center" style={{marginTop: '24px', cursor: 'pointer',}} onClick={() => router.push('/')}>
+          <Row style={{ height: '65px', width: '90px' }} align="middle">
+            <Image src={Logo} alt="Logo Thăng Long" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </Row>
+          
+          {!collapsed && <Title level={3} italic underline style={{margin: 0, fontWeight: 500, transition: 'all 0.3s linear'}}>GDay Shop</Title>}
         </Row>
-        <Menu style={{ marginTop: '20px' }} selectedKeys={['Shop']} items={ListMenuItem} />
+        <Menu
+          style={{ marginTop: '20px' }}
+          selectedKeys={[selectedKeyMenu]}
+          items={ListMenuItem}
+          onClick={handleClickMenu}
+        />
       </Sider>
-      <Layout style={{ marginLeft: collapsed ? 80 : 220, backgroundColor: '#fff', transition: "margin-left 0.3s ease" }}>
+      <Layout
+        style={{ marginLeft: collapsed ? 80 : 220, backgroundColor: '#fff', transition: 'margin-left 0.3s ease' }}
+      >
         <Header
           style={{
             display: 'flex',
@@ -101,7 +122,7 @@ const MainLayout = ({ children }: LayoutProps): JSX.Element => {
             right: 0,
             left: collapsed ? 80 : 220,
             zIndex: 10,
-            transition: "left 0.3s ease"
+            transition: 'left 0.3s ease',
           }}
         >
           <Row style={{ width: '50%', maxWidth: '600px' }} justify="center" align="middle">
@@ -110,7 +131,7 @@ const MainLayout = ({ children }: LayoutProps): JSX.Element => {
 
           <Row style={{ flex: 1, gap: '20px' }} justify="end" align="middle">
             <Select
-              style={{width: "120px"}}
+              style={{ width: '120px' }}
               defaultValue="vi"
               options={[
                 { value: 'vi', label: 'Tiếng Việt' },
@@ -137,9 +158,7 @@ const MainLayout = ({ children }: LayoutProps): JSX.Element => {
             </Badge>
           </Row>
         </Header>
-        <Content style={{ padding: '40px', marginTop: '60px' }}>
-          {children}
-        </Content>
+        <Content style={{ padding: '40px', marginTop: '60px' }}>{children}</Content>
       </Layout>
     </Layout>
   );
