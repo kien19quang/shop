@@ -1,11 +1,10 @@
+import AboutUsImage from '../../assets/Images/AboutUs.png';
+import CEO from '../../assets/Images/CEO.jpeg';
 import RowAnimation from '@/components/RowAnimation';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
-import { Button, Card, Col, Divider, Row, Typography, theme } from 'antd';
-import Logo from '@/assets/logo.svg';
-import Image from 'next/image';
 import { GlobalOutlined, LockOutlined, SettingOutlined, ShoppingCartOutlined, StarOutlined, TagOutlined } from '@ant-design/icons';
-import AboutUsImage from '@/assets/Images/AboutUs.png';
-import CEO from '@/assets/Images/CEO.jpeg';
+import { Button, Card, Col, Divider, Row, Typography, theme } from 'antd';
+import Image from 'next/image';
 
 const { Text, Paragraph, Title } = Typography;
 const { Meta } = Card;

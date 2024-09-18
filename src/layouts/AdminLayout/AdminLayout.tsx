@@ -3,7 +3,7 @@ import { Avatar, Dropdown, Flex, Input, Layout, Menu, MenuProps, Popover, Select
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import Logo from '@/assets/LogoSecondary.svg';
+import Logo from '../../assets/LogoSecondary.svg';
 import { PiArrowsClockwise, PiShoppingCart, PiSignOut, PiUser } from 'react-icons/pi'
 import { UserOutlined } from '@ant-design/icons';
 import { signOut, useSession } from 'next-auth/react';

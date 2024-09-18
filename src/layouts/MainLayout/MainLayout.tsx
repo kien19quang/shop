@@ -1,7 +1,7 @@
 import { KeyMenuAsRoute, LayoutProps } from '@/models/common';
 import { Layout, Row, Menu, MenuProps, Input, Popover, Button, Avatar, theme, Select, Badge, Divider, Typography, Dropdown, Flex } from 'antd';
 import Image from 'next/image';
-import Logo from '@/assets/LogoSecondary.svg';
+import Logo from '../../assets/LogoSecondary.svg';
 import { ShopOutlined, TeamOutlined, MailOutlined, UserOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';

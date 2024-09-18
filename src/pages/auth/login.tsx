@@ -1,14 +1,13 @@
-import { Button, Checkbox, Divider, Form, Input, Row, Typography, message } from 'antd';
-import Image from 'next/image';
-import SignInBanner from '@/assets/images/SignInBanner.svg';
 import { Ornament } from '@/components/Icons';
+import { LoginUserDto } from '@/models/user/UserModel';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Row, Typography, message } from 'antd';
+import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { signIn } from 'next-auth/react';
-import LogoGCook from '@/assets/images/LogoGCook.svg'
 import { useCallback, useState } from 'react';
-import { LoginUserDto } from '@/models/user/UserModel';
+import SignInBanner from '../../assets/Images/SignInBanner.svg';
 
 const { Text, Title } = Typography;
 

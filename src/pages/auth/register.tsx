@@ -1,4 +1,4 @@
-import SignInBanner from '@/assets/images/SignInBanner.svg';
+import SignInBanner from '../../assets/Images/SignInBanner.svg';
 import { Ornament } from '@/components/Icons';
 import ApiClient from '@/configs/axiosConfig';
 import { RegisterUserDto } from '@/models/user/UserModel';

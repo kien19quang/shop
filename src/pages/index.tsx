@@ -1,9 +1,9 @@
-import Banner1 from '@/assets/Images/Banner1.png';
-import Banner2 from '@/assets/images/Banner2.png';
-import Banner3 from '@/assets/images/Banner3.png';
-import CategoryImage from '@/assets/images/Category.jpg';
-import CategoryImage2 from '@/assets/images/Category2.jpg';
-import MainBanner from '@/assets/images/MainBanner.png';
+import Banner1 from '../assets/Images/Banner1.png';
+import Banner2 from '../assets/Images/Banner2.png';
+import Banner3 from '../assets/Images/Banner3.png';
+import CategoryImage from '../assets/Images/Category.jpg';
+import CategoryImage2 from '../assets/Images/Category2.jpg';
+import MainBanner from '../assets/Images/MainBanner.png';
 import { CustomNextArrow, CustomPrevArrow } from '@/components/common/Arrow';
 import { NoImageIcon } from '@/components/Icons';
 import MainLayout from '@/layouts/MainLayout/MainLayout';

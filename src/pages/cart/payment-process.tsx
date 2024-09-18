@@ -1,4 +1,8 @@
+import Visa from '../../assets/Images/visa.svg';
 import OrderSummary from '@/components/common/OrderSummary';
+import ModalAddress from '@/components/Modals/ModalAddress';
+import ModalPayment from '@/components/Modals/ModalPayment';
+import ModalPaymentMethod from '@/components/Modals/ModalPaymentMethod';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
 import { EStepPayment } from '@/models/cart/cartModel';
 import {
@@ -25,13 +29,8 @@ import {
   theme,
 } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import Visa from '@/assets/Images/visa.svg';
-import MasterCard from '@/assets/Images/mastercard.svg';
 import Image from 'next/image';
-import ModalAddress from '@/components/Modals/ModalAddress';
-import ModalPaymentMethod from '@/components/Modals/ModalPaymentMethod';
-import ModalPayment from '@/components/Modals/ModalPayment';
+import React, { useEffect, useState } from 'react';
 
 const listShipping: any = [1, 2];
 

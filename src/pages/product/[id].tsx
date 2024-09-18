@@ -1,4 +1,3 @@
-import Product from '@/assets/images/Product.svg';
 import { NoImageIcon } from '@/components/Icons';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
 import { IProduct } from '@/models/product/ProductModel';
@@ -12,6 +11,7 @@ import {
   ShoppingCartOutlined
 } from '@ant-design/icons';
 import {
+  Image as AntImage,
   Breadcrumb,
   Button,
   Card,
@@ -23,11 +23,9 @@ import {
   Row,
   Statistic,
   Typography,
-  theme,
-  Image as AntImage
+  theme
 } from 'antd';
 import { CarouselRef } from 'antd/es/carousel';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 

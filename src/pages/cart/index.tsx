@@ -23,7 +23,7 @@ import {
   Dropdown,
   MenuProps,
 } from 'antd';
-import Product from '@/assets/Images/Product.svg';
+import Product from '../../assets/Images/Product.svg';
 import Image from 'next/image';
 import { useState } from 'react';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
