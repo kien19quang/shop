@@ -12,10 +12,12 @@ import ProductService from '@/services/ProductService';
 import { UserOutlined } from '@ant-design/icons';
 import { Image as AntImage, Card, Carousel, Flex, List, Row, Statistic, Typography } from 'antd';
 import { NextPageContext } from 'next';
+import { getServerSession } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { authOptions } from './api/auth/[...nextauth]';
 
 const { Text } = Typography;
 const { Meta } = Card;
@@ -306,9 +308,8 @@ const Shop = () => {
   );
 };
 
-export async function getServerSideProps(context: NextPageContext) {
-  const session = await getSession(context);
-  console.log(session)
+export async function getServerSideProps({ req, res }: any) {
+  const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
     return {

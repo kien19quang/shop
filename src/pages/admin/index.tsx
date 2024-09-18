@@ -6,9 +6,11 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Flex, Form, Modal, notification, Table, TableColumnsType, Typography } from "antd";
 import { isNil } from "lodash";
 import { NextPageContext } from "next";
+import { getServerSession } from "next-auth";
 import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { PiPencil, PiTrash } from "react-icons/pi";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 const { Text, Title } = Typography
 const { confirm } = Modal
@@ -198,8 +200,8 @@ function AdminPage (props: AdminPageProps) {
   );
 }
 
-export async function getServerSideProps(context: NextPageContext) {
-  const session = await getSession(context);
+export async function getServerSideProps({ req, res }: any) {
+  const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
     return {
