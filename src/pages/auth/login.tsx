@@ -28,11 +28,9 @@ const Login = () => {
             redirect: false,
             callbackUrl: '/'
           });
-          console.log(response)
           if (response?.error) {
             return message.warning(response.error)
           }
-          console.log(123)
           router.push('/')
         })
         .catch((error) => {

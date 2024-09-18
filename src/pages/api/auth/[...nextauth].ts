@@ -28,6 +28,8 @@ const providers: Provider[] = [
         password: credentials.password,
       })
 
+      console.log(result)
+
       if (result?.error_message) {
         throw new Error('Vui lòng kiểm tra lại thông tin đăng nhập');
       }
