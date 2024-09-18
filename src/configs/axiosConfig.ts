@@ -6,7 +6,7 @@ class BaseApi {
   constructor(baseURL?: string) {
     console.log(process.env.BACKEND_URL)
     this.axiosInstance = axios.create({
-      baseURL: baseURL || process.env.BACKEND_URL,
+      baseURL: baseURL || process.env.BACKEND_URL || "https://shop.fabuleuse.co",
       headers: {
         "Content-Type": "application/json"
       },
