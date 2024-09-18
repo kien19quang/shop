@@ -55,7 +55,7 @@ const Login = () => {
   return (
     <Row style={{ flexWrap: 'nowrap', height: '100vh' }}>
       <Row style={{ width: '50%', maxWidth: 720, flexDirection: 'column', flexWrap: 'nowrap' }}>
-        <Row style={{ height: '70%' }}>
+        <Row style={{ height: '70%', overflow: 'hidden' }}>
           <Image src={SignInBanner} alt="Robot" style={{ objectFit: 'cover', width: 'auto', height: 'auto' }} priority={true} />
         </Row>
         <Row style={{ height: '30%', flexDirection: 'column', padding: 24, borderTop: '5px solid #27A376', backgroundColor: '#111827', flexWrap: 'nowrap' }} justify="center">
