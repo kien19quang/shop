@@ -307,16 +307,16 @@ const Shop = () => {
 };
 
 export async function getServerSideProps(context: NextPageContext) {
-  const session = await getSession(context);
+  // const session = await getSession(context);
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/auth/login',
-        permanent: false,
-      }
-    }
-  }
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: '/auth/login',
+  //       permanent: false,
+  //     }
+  //   }
+  // }
 
   return {
     props: {}
