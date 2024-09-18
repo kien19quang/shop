@@ -18,7 +18,6 @@ export default function ModalAddProduct ({ form, type, ...props }: ModalAddProdu
       return;
     }
     if (info.file.status === 'done') {
-      console.log(info)
       // Get this url from response in real world.
       if (info.file.originFileObj) {
         const uploadFile = new FormData()

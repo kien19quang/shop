@@ -4,7 +4,6 @@ import { getSession } from "next-auth/react";
 class BaseApi {
   axiosInstance: AxiosInstance;
   constructor(baseURL?: string) {
-    console.log(process.env.BACKEND_URL, process.env.NEXTAUTH_URL)
     this.axiosInstance = axios.create({
       baseURL: baseURL || process.env.BACKEND_URL || "https://shop.fabuleuse.co",
       headers: {
