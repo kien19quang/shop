@@ -32,7 +32,7 @@ const Login = () => {
           if (response?.error) {
             return message.warning(response.error)
           }
-
+          console.log(123)
           router.push('/')
         })
         .catch((error) => {
