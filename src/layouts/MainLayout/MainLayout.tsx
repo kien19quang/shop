@@ -1,15 +1,17 @@
 import { KeyMenuAsRoute, LayoutProps } from '@/models/common';
-import { Layout, Row, Menu, MenuProps, Input, Popover, Button, Avatar, theme, Select, Badge, Divider, Typography } from 'antd';
+import { Layout, Row, Menu, MenuProps, Input, Popover, Button, Avatar, theme, Select, Badge, Divider, Typography, Dropdown, Flex } from 'antd';
 import Image from 'next/image';
 import Logo from '@/assets/LogoSecondary.svg';
 import { ShopOutlined, TeamOutlined, MailOutlined, UserOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { MenuInfo } from 'rc-menu/lib/interface';
+import { PiArrowsClockwise, PiGear, PiSignOut } from 'react-icons/pi';
+import { signOut, useSession } from 'next-auth/react';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Search } = Input;
-const { Title } = Typography
+const { Title, Text } = Typography
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -42,10 +44,22 @@ const listRouteMenuItem: Array<{ route: string; key: string }> = [
   { route: 'contact', key: 'Contact' },
 ];
 
+const items: MenuProps['items'] = [
+  {
+    label: (
+      <Flex gap={8} align='center' style={{ fontSize: 15 }}>
+        <PiSignOut size={18} fill='currentColor' /> Đăng xuất
+      </Flex>
+    ),
+    key: 'sign-out',
+    danger: true,
+  },
+];
+
 const MainLayout = ({ children }: LayoutProps): JSX.Element => {
-  const { token } = theme.useToken();
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [selectedKeyMenu, setSelectedKeyMenu] = useState<string>('Shop');
+  const { data } = useSession()
   const router = useRouter();
 
   useEffect(() => {
@@ -64,11 +78,31 @@ const MainLayout = ({ children }: LayoutProps): JSX.Element => {
 
   const handleClickMenu = (value: MenuInfo) => {
     const keyMenu = value.key as keyof typeof KeyMenuAsRoute;
-    if (keyMenu !== selectedKeyMenu) {
+    if (keyMenu !== selectedKeyMenu || router.pathname.includes('cart')) {
       router.push(`/${KeyMenuAsRoute[keyMenu]}`);
       setSelectedKeyMenu(keyMenu);
     }
   };
+
+  const handleClickDropdown: MenuProps["onClick"] = (info) => {
+    if (info.key === 'sign-out') {
+      signOut({ redirect: true, callbackUrl: '/auth/login' });
+    }
+    else if (info.key === 'manage-system') {
+      router.push('/admin')
+    }
+  }
+
+  if (data?.user?.role === 'ADMIN' && !items.find(item => item?.key === 'manage-system')) {
+    items.unshift({
+      label: (
+        <Flex gap={8} align='center' style={{ fontSize: 15 }}>
+          <PiGear size={18} fill='currentColor' /> Quản lý hệ thống
+        </Flex>
+      ),
+      key: 'manage-system',
+    })
+  }
 
   return (
     <Layout hasSider style={{ backgroundColor: '#fff', minHeight: '100vh' }}>
@@ -130,28 +164,12 @@ const MainLayout = ({ children }: LayoutProps): JSX.Element => {
           </Row>
 
           <Row style={{ flex: 1, gap: '20px' }} justify="end" align="middle">
-            <Select
-              style={{ width: '120px' }}
-              defaultValue="vi"
-              options={[
-                { value: 'vi', label: 'Tiếng Việt' },
-                { value: 'en', label: 'Tiếng Anh' },
-              ]}
-            />
-
-            <Popover
-              trigger="click"
-              placement="bottomRight"
-              content={
-                <Row style={{ flexDirection: 'column' }}>
-                  <Button type="link" style={{ color: token.colorPrimary }}>
-                    Đăng xuất
-                  </Button>
-                </Row>
-              }
-            >
-              <Avatar size={34} icon={<UserOutlined />} />
-            </Popover>
+            <Dropdown trigger={['click']} menu={{ items, style: { minWidth: 200 }, onClick: handleClickDropdown }} placement='bottomRight' arrow>
+              <Flex align='center' gap={8} style={{ cursor: 'pointer' }}>
+                <Avatar size={34} icon={<UserOutlined />} />
+                <Text>{data?.user?.name}</Text>
+              </Flex>
+            </Dropdown>
 
             <Badge count={99} overflowCount={10}>
               <ShoppingCartOutlined style={{ cursor: 'pointer', fontSize: '30px' }} onClick={handleRouterCart} />

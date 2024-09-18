@@ -1,16 +1,15 @@
+import Product from '@/assets/images/Product.svg';
+import { NoImageIcon } from '@/components/Icons';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
+import { IProduct } from '@/models/product/ProductModel';
+import ProductService from '@/services/ProductService';
 import {
   ArrowLeftOutlined,
-  FacebookOutlined,
-  HeartOutlined,
-  InstagramOutlined,
   LeftOutlined,
-  LinkOutlined,
   MinusOutlined,
   PlusOutlined,
   RightOutlined,
-  ShoppingCartOutlined,
-  TwitterOutlined,
+  ShoppingCartOutlined
 } from '@ant-design/icons';
 import {
   Breadcrumb,
@@ -18,37 +17,41 @@ import {
   Card,
   Carousel,
   Descriptions,
+  Flex,
   InputNumber,
   Rate,
   Row,
   Statistic,
   Typography,
   theme,
+  Image as AntImage
 } from 'antd';
-import { useRef, useState } from 'react';
-import Product from '@/assets/images/Product.svg';
-import Image from 'next/image';
 import { CarouselRef } from 'antd/es/carousel';
-import { CustomNextArrow, CustomPrevArrow } from '@/components/common/Arrow';
-import style from '@/styles/Product/Product.module.scss';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 
 const { Text, Title, Paragraph } = Typography;
 const { Meta } = Card;
 
-const listPreviewProduct = [1, 2, 3, 4, 5];
-const listProduct: Array<{ label: string; urlImage: any }> = [];
-for (let i = 0; i < 20; i++) {
-  listProduct.push({ label: `Sản phẩm ${i}`, urlImage: Product });
-}
-
 const ProductDetail = () => {
   const [quanlity, setQuanlity] = useState<number>(1);
   const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [detailProduct, setDetailProduct] = useState<IProduct>()
   const carouselProduct = useRef<CarouselRef>(null);
   const router = useRouter()
-
   const { token } = theme.useToken();
+
+  useEffect(() => {
+    if (router.query.id) {
+      initData()
+    }
+  }, [router.query.id])
+
+  const initData = async () => {
+    const response = await ProductService.getDetailProduct(router.query.id as string)
+    setDetailProduct(response)
+  }
 
   const handleChangeQuantity = (value: number | null): void => {
     if (typeof value === 'number' && value > 0) {
@@ -94,27 +97,29 @@ const ProductDetail = () => {
         <Row style={{ flexDirection: 'column', justifyContent: 'space-between', gap: 20 }}>
           <ArrowLeftOutlined style={{ fontSize: 20, cursor: 'pointer' }} onClick={handleRouterBack} />
 
-          <Breadcrumb items={[{ title: 'Shop' }, { title: 'Apple iPhone 13' }]} style={{ fontSize: 16 }} />
+          <Breadcrumb items={[{ title: 'Shop' }, { title: detailProduct?.name }]} style={{ fontSize: 16 }} />
         </Row>
 
-        <Row justify="space-between" align="middle" style={{ flexDirection: 'column', gap: 20 }}>
-          <Text style={{ fontSize: 16 }}>
-            {formatValue(currentSlide + 1)} / {formatValue(5)}
-          </Text>
+        {detailProduct?.images && detailProduct?.images?.length > 0 && (
+          <Row justify="space-between" align="middle" style={{ flexDirection: 'column', gap: 20 }}>
+            <Text style={{ fontSize: 16 }}>
+              {`${formatValue(currentSlide + 1)} / ${formatValue(detailProduct.images.length)}` }
+            </Text>
 
-          <Row style={{ width: '130px', justifyContent: 'space-between' }}>
-            <LeftOutlined style={{ fontSize: 20, cursor: 'pointer' }} onClick={() => handleChangePreview('prev')} />
-            <RightOutlined style={{ fontSize: 20, cursor: 'pointer' }} onClick={() => handleChangePreview('next')} />
+            <Row style={{ width: '130px', justifyContent: 'space-between' }}>
+              <LeftOutlined style={{ fontSize: 20, cursor: 'pointer' }} onClick={() => handleChangePreview('prev')} />
+              <RightOutlined style={{ fontSize: 20, cursor: 'pointer' }} onClick={() => handleChangePreview('next')} />
+            </Row>
           </Row>
-        </Row>
+        )}
       </Row>
 
-      <Row justify="space-between" style={{ width: '100%' }}>
+      <Flex justify="space-between" gap={16} style={{ width: '100%' }}>
         <Row style={{ flexDirection: 'column', gap: '20px', width: '40%' }}>
           <Title level={3}>Apple iPhone 13</Title>
           <Row justify="space-between" align="middle" style={{ width: '100%' }}>
             <Statistic
-              value={18000000}
+              value={detailProduct?.price}
               suffix={'đ'}
               valueStyle={{ fontSize: 20, color: '#FF424E', fontWeight: 600 }}
               groupSeparator="."
@@ -131,8 +136,7 @@ const ProductDetail = () => {
             </Row>
           </Row>
           <Paragraph>
-            The gently curved lines accentuated by sewn details are kind to your body and pleasant to look at. Also,
-            there’s a tilt and height-adjusting mechanism that’s built to outlast years of ups and downs.
+            {detailProduct?.description}
           </Paragraph>
 
           <Row align="middle" style={{ gap: 20 }}>
@@ -157,6 +161,7 @@ const ProductDetail = () => {
                 </Button>
               }
               style={{ width: 130 }}
+              className='input__add-to-cart'
               value={quanlity}
               onChange={handleChangeQuantity}
             />
@@ -168,7 +173,7 @@ const ProductDetail = () => {
 
           <Text>Free 3-5 day shipping • Tool-free assembly • 30-day trial</Text>
 
-          <Row justify="space-between" align="middle" style={{ width: '100%', marginTop: 16 }}>
+          {/* <Row justify="space-between" align="middle" style={{ width: '100%', marginTop: 16 }}>
             <Row align="middle" style={{ gap: 14 }}>
               <HeartOutlined style={{ color: token.colorPrimary, fontSize: 22, cursor: 'pointer' }} />
 
@@ -181,42 +186,50 @@ const ProductDetail = () => {
               <InstagramOutlined style={{ cursor: 'pointer' }} />
               <LinkOutlined style={{ cursor: 'pointer' }} />
             </Row>
-          </Row>
+          </Row> */}
         </Row>
 
-        <Row style={{ flexDirection: 'column', flex: 1 }}>
-          <Carousel dots={false} ref={carouselProduct} beforeChange={handleChangeSlide}>
-            {listPreviewProduct.map((item) => {
-              return (
-                <Row key={JSON.stringify(item)}>
-                  <Image src={Product} alt="Product" style={{ width: '100%' }} />
-                </Row>
-              );
-            })}
-          </Carousel>
+        {(detailProduct?.images && detailProduct?.images.length > 0) ? (
+          <Row style={{ flexDirection: 'column', flex: 1 }}>
+            <Carousel dots={false} ref={carouselProduct} beforeChange={handleChangeSlide}>
+              {detailProduct?.images?.map((item) => {
+                return (
+                  <Flex key={item}>
+                    <AntImage src={item} alt="Product" style={{ width: '100%' }} />
+                  </Flex>
+                );
+              })}
+            </Carousel>
 
-          <Row justify="center" style={{ gap: '12px' }}>
-            {listPreviewProduct.map((item, index) => {
-              return (
-                <Row
-                  key={index}
-                  style={{
-                    width: 90,
-                    height: 90,
-                    border: `1px solid ${index === currentSlide ? token.colorPrimary : '#D1D1D8'}`,
-                    borderRadius: 8,
-                  }}
-                  onClick={() => carouselProduct.current?.goTo(index)}
-                >
-                  <Image src={Product} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Product" />
-                </Row>
-              );
-            })}
+            <Row justify="center" style={{ gap: '12px' }}>
+              {detailProduct?.images?.map((item, index) => {
+                return (
+                  <Row
+                    key={index}
+                    style={{
+                      width: 90,
+                      height: 90,
+                      border: `1px solid ${index === currentSlide ? token.colorPrimary : '#D1D1D8'}`,
+                      borderRadius: 8,
+                      overflow: 'hidden'
+                    }}
+                    onClick={() => carouselProduct.current?.goTo(index)}
+                  >
+                    <AntImage src={item} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Product" />
+                  </Row>
+                );
+              })}
+            </Row>
           </Row>
-        </Row>
-      </Row>
+        ) : (
+          <Flex justify='center' style={{ flex: 1 }}>
+            <NoImageIcon height={60} width={60} />
+          </Flex>
+        )}
 
-      <Row style={{ width: '100%' }}>
+      </Flex>
+
+      {/* <Row style={{ width: '100%' }}>
         <Card style={{ width: '100%' }} title={<Text style={{ fontSize: '18px' }}>Sản phẩm tương tự</Text>}>
           <Carousel
             arrows={true}
@@ -259,7 +272,7 @@ const ProductDetail = () => {
             })}
           </Carousel>
         </Card>
-      </Row>
+      </Row> */}
 
       <Row style={{ width: '100%' }}>
         <Card style={{ width: '100%' }} title={<Text style={{ fontSize: '18px' }}>Thông tin chi tiết</Text>}>

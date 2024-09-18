@@ -1,15 +1,21 @@
 import EmptyLayout from '@/layouts/EmptyLayout/EmptyLayout';
-import { AppPropsWithLayout } from '@/models/common';
-import '@/styles/globals.css';
+import '@/styles/globals.scss';
 import "@/styles/config.antd.scss"
-import Theme from '../styles/theme'
-import '../../public/antd.min.css';
-export default function App({ Component, pageProps }: AppPropsWithLayout) {
+import { AppPropsWithLayout } from '@/models/common';
+import { ConfigProvider } from 'antd';
+import theme from '../styles/theme';
+import { SessionProvider } from 'next-auth/react';
+
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
   const Layout = Component.Layout ?? EmptyLayout;
 
-  return Theme(
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>,
-  );
+  return (
+    <SessionProvider session={session} refetchOnWindowFocus={false} refetchInterval={10 * 60}>
+      <ConfigProvider theme={theme}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ConfigProvider>
+    </SessionProvider>
+  )
 }

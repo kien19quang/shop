@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
-import { Card, Carousel, Col, List, Row, Statistic, Typography } from 'antd';
+import { Card, Carousel, Col, Flex, List, Row, Statistic, Typography, Image as AntImage } from 'antd';
 import Image from 'next/image';
 import { CarOutlined, DollarOutlined, LeftOutlined, RightOutlined, UserOutlined } from '@ant-design/icons';
-import ProductImage from '@/assets/images/Product.svg';
 import CategoryImage from '@/assets/images/Category.jpg';
 import CategoryImage2 from '@/assets/images/Category2.jpg';
 import Banner1 from '@/assets/images/Banner1.png';
@@ -12,41 +11,40 @@ import Banner3 from '@/assets/images/Banner3.png';
 import MainBanner from '@/assets/images/MainBanner.png';
 import { useRouter } from 'next/router';
 import { CustomNextArrow, CustomPrevArrow } from '@/components/common/Arrow';
+import ProductService from '@/services/ProductService';
+import { NoImageIcon } from '@/components/Icons';
+import { IProduct } from '@/models/product/ProductModel';
+import { getSession } from 'next-auth/react';
+import { NextPageContext } from 'next';
 
 const { Text } = Typography;
 const { Meta } = Card;
-const listProduct: number[] = [];
 const tabList: Array<{ key: string; tab: React.ReactNode }> = [
   {
     key: 'ForYou',
     tab: (
-      <Row style={{ fontSize: 16 }}>
+      <Flex gap={8} style={{ fontSize: 16 }}>
         <UserOutlined style={{ fontSize: 18 }} /> Dành cho bạn
-      </Row>
+      </Flex>
     ),
   },
-  {
-    key: 'CheapEveryDay',
-    tab: (
-      <Row style={{ fontSize: 16 }}>
-        <DollarOutlined style={{ fontSize: 18 }} /> Rẻ mỗi ngày
-      </Row>
-    ),
-  },
-  {
-    key: 'Freeship',
-    tab: (
-      <Row style={{ fontSize: 16 }}>
-        <CarOutlined style={{ fontSize: 18 }} /> Freeship
-      </Row>
-    ),
-  },
+  // {
+  //   key: 'CheapEveryDay',
+  //   tab: (
+  //     <Flex gap={8} style={{ fontSize: 16 }}>
+  //       <DollarOutlined style={{ fontSize: 18 }} /> Rẻ mỗi ngày
+  //     </Flex>
+  //   ),
+  // },
+  // {
+  //   key: 'Freeship',
+  //   tab: (
+  //     <Flex gap={8} style={{ fontSize: 16 }}>
+  //       <CarOutlined style={{ fontSize: 18 }} /> Freeship
+  //     </Flex>
+  //   ),
+  // },
 ];
-
-for (let i = 0; i < 42; i++) {
-  listProduct.push(i);
-}
-
 
 const listCategory: Array<{ label: string; urlImage: any }> = [
   { label: 'Kiến thức - Bách khoa', urlImage: CategoryImage },
@@ -59,18 +57,26 @@ const listCategory: Array<{ label: string; urlImage: any }> = [
   { label: 'Tiểu thuyết', urlImage: CategoryImage2 },
 ];
 
-
-
 const Shop = () => {
   const [activeTabKey, setActiveTabKey] = useState<string>('ForYou');
+  const [listProducts, setListProducts] = useState<IProduct[]>([]);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const handleShowProduct = (item: any) => {
-    router.push({pathname: "product/Apple_iPhone_13", query: { id: item }})
-  }
+  useEffect(() => {
+    initData();
+  }, []);
 
-  const renderContent = (dataSource: any, text: any): React.ReactNode => {
+  const initData = async () => {
+    const response = await ProductService.getListProducts();
+    setListProducts(response || []);
+  };
+
+  const handleShowProduct = (item: IProduct) => {
+    router.push({ pathname: `product/${item._id}` });
+  };
+
+  const renderContent = (dataSource: IProduct[], text: any): React.ReactNode => {
     return (
       <List
         grid={{ gutter: 24, column: 4, xxl: 6 }}
@@ -80,22 +86,32 @@ const Shop = () => {
             console.log(page);
           },
           pageSize: 24,
-          showSizeChanger: true
+          total: listProducts.length,
+          showSizeChanger: true,
         }}
         renderItem={(item) => {
           return (
             <List.Item>
               <Card
                 hoverable
-                style={{ width: '100%', paddingTop: '24px', transition: "width 0.3s ease" }}
+                style={{ width: '100%', transition: 'width 0.3s ease', overflow: 'hidden' }}
                 cover={
-                  <Image
-                    src={ProductImage}
-                    alt="Product"
-                    style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-                  />
+                  item.images?.length > 0 ? (
+                    <AntImage
+                      src={item.images[0]}
+                      alt="Product"
+                      style={{ width: '100%', height: 200, objectFit: 'contain' }}
+                      preview={false}
+                    />
+                  ) : (
+                    <Flex justify="center" align="center" style={{ width: '100%', display: 'flex', height: 200 }}>
+                      <NoImageIcon />
+                    </Flex>
+                  )
                 }
-                bodyStyle={{ borderTop: '1px solid rgb(240, 240, 240)' }}
+                styles={{
+                  body: { borderTop: '1px solid rgb(240, 240, 240)' },
+                }}
                 onClick={() => handleShowProduct(item)}
               >
                 <Meta
@@ -103,16 +119,16 @@ const Shop = () => {
                   description={
                     <Row align="middle" style={{ gap: '6px' }}>
                       <Statistic
-                        value={18000000}
+                        value={item.price}
                         suffix={'đ'}
                         valueStyle={{ fontSize: 16, color: '#FF424E', fontWeight: 600 }}
                         groupSeparator="."
                       />
-                      <Statistic
+                      {/* <Statistic
                         value={text}
                         suffix={'%'}
                         valueStyle={{ fontSize: 14, color: '#FF424E', fontWeight: 500 }}
-                      />
+                      /> */}
                     </Row>
                   }
                 />
@@ -125,9 +141,9 @@ const Shop = () => {
   };
 
   const contentTab: Record<string, React.ReactNode> = {
-    ForYou: renderContent(listProduct, 20),
-    CheapEveryDay: renderContent(listProduct, 40),
-    Freeship: renderContent(listProduct, 60),
+    ForYou: renderContent(listProducts, 20),
+    CheapEveryDay: renderContent(listProducts, 40),
+    Freeship: renderContent(listProducts, 60),
   };
 
   const onTabChange = (tab: string) => {
@@ -147,27 +163,39 @@ const Shop = () => {
       >
         <Row style={{ flex: 1, borderRadius: 8 }}>
           <Carousel
-            style={{ height: '280px', width: '100%', cursor: "pointer" }}
+            style={{ height: '280px', width: '100%', cursor: 'pointer' }}
             prevArrow={<CustomPrevArrow />}
             nextArrow={<CustomNextArrow />}
             autoplay
             arrows={true}
           >
             <Row style={{ height: '280px' }}>
-              <Image src={Banner1} alt="Banner" style={{ width: '100%', height: '280px', borderRadius: 8, userSelect: 'none' }} />
+              <Image
+                src={Banner1}
+                alt="Banner"
+                style={{ width: '100%', height: '280px', borderRadius: 8, userSelect: 'none' }}
+              />
             </Row>
 
             <Row style={{ height: '280px' }}>
-              <Image src={Banner2} alt="Banner" style={{ width: '100%', height: '280px', borderRadius: 8, userSelect: 'none' }} />
+              <Image
+                src={Banner2}
+                alt="Banner"
+                style={{ width: '100%', height: '280px', borderRadius: 8, userSelect: 'none' }}
+              />
             </Row>
 
             <Row style={{ height: '280px' }}>
-              <Image src={Banner3} alt="Banner" style={{ width: '100%', height: '280px', borderRadius: 8, userSelect: 'none' }} />
+              <Image
+                src={Banner3}
+                alt="Banner"
+                style={{ width: '100%', height: '280px', borderRadius: 8, userSelect: 'none' }}
+              />
             </Row>
           </Carousel>
         </Row>
 
-        <Row style={{ width: '25%', height: '280px', cursor: "pointer" }}>
+        <Row style={{ width: '25%', height: '280px', cursor: 'pointer' }}>
           <Image
             src={MainBanner}
             alt="Main Banner"
@@ -214,7 +242,7 @@ const Shop = () => {
                       }}
                     />
                   }
-                  style={{ width: '100%', cursor: 'pointer', transition: "width 0.3s ease" }}
+                  style={{ width: '100%', cursor: 'pointer', transition: 'width 0.3s ease' }}
                 >
                   <Meta title={<Text>{item.label}</Text>} />
                 </Card>
@@ -255,7 +283,7 @@ const Shop = () => {
                       }}
                     />
                   }
-                  style={{ width: '100%', cursor: 'pointer', transition: "width 0.3s ease" }}
+                  style={{ width: '100%', cursor: 'pointer', transition: 'width 0.3s ease' }}
                 >
                   <Meta title={<Text>{item.label}</Text>} />
                 </Card>
@@ -277,6 +305,23 @@ const Shop = () => {
     </Row>
   );
 };
+
+export async function getServerSideProps(context: NextPageContext) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: {}
+  }
+}
 
 Shop.Layout = MainLayout;
 

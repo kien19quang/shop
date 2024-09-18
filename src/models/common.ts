@@ -19,3 +19,8 @@ export enum KeyMenuAsRoute {
   "About Us" = "about-us",
   "Contact" = "contact"
 }
+
+export enum KeyMenuAdminAsRouter {
+  "manage-admin" = "/admin",
+  "products" = "/admin/products"
+}
