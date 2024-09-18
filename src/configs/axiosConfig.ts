@@ -4,8 +4,9 @@ import { getSession } from "next-auth/react";
 class BaseApi {
   axiosInstance: AxiosInstance;
   constructor(baseURL?: string) {
+    console.log(process.env.BACKEND_URL)
     this.axiosInstance = axios.create({
-      baseURL: baseURL || process.env.BACKEND_URL || 'http://127.0.0.1:5000',
+      baseURL: baseURL || process.env.BACKEND_URL,
       headers: {
         "Content-Type": "application/json"
       },
