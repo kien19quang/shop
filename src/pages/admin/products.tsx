@@ -132,7 +132,7 @@ function ProductsPage(props: ProductsPageProps) {
           >
             {record.images.map(item => {
               return (
-                <Avatar src={item} size={40} />
+                <Avatar key={item} src={item} size={40} />
               )
             })}
           </Avatar.Group>
