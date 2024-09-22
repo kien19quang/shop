@@ -2,6 +2,7 @@ import ProductService from "@/services/ProductService";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Form, FormInstance, Input, InputNumber, Modal, ModalProps, Upload, UploadProps } from "antd";
 import { UploadChangeParam, UploadFile } from "antd/es/upload";
+import axios from "axios";
 import { useState } from "react";
 
 export interface ModalAddProductProps extends ModalProps {
@@ -17,17 +18,7 @@ export default function ModalAddProduct ({ form, type, ...props }: ModalAddProdu
       setLoading(true);
       return;
     }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      if (info.file.originFileObj) {
-        const uploadFile = new FormData()
-        const file: any = info.file.originFileObj
-        uploadFile.append('file', file)
-        const responseImage = await ProductService.uploadImage(uploadFile)
-        if (responseImage?.data) {
-          (info.file as any).src = responseImage.data.src
-        }
-      }
+    if (info.file.status === 'done' || info.file.status === 'error') {
       setLoading(false);
     }
   };
@@ -89,6 +80,29 @@ export default function ModalAddProduct ({ form, type, ...props }: ModalAddProdu
             onChange={handleChange}
             accept='image/jpeg, image/png, image/jpg'
             action={undefined}
+            customRequest={options => {
+              const { onSuccess, onError, file, onProgress } = options;
+
+              const fmData = new FormData();
+              const config = {
+                headers: { "content-type": "multipart/form-data" },
+              };
+              fmData.append("file", file);
+              axios
+                .post("https://zchat-staging.f99.link/api/advertise/attachments", fmData, config)
+                .then(res => {
+                  if (typeof onSuccess === 'function') {
+                    (file as any).src = res?.data?.data?.src
+                    onSuccess(file);
+                  }
+                })
+                .catch(err=>{
+                  const error = new Error('Some error');
+                  if (typeof onError === 'function') {
+                    onError({event:error} as any);
+                  }
+                });
+            }}
             method='post'
             headers={{
               'Content-Type': 'multipart/form-data',
